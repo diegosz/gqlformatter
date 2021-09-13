@@ -1,0 +1,1 @@
+query{products(where:{id:{and:{greater_or_equals:20 lt:28}}}){id name price}}

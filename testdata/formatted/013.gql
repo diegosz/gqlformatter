@@ -1,0 +1,9 @@
+query scriptGetBlob {
+  blobs(id: $id) {
+    id
+    label
+    uri
+    duration
+    metadata
+  }
+}

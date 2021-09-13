@@ -1,0 +1,1 @@
+query{product(id:15){id name}}

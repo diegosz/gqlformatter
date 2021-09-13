@@ -1,0 +1,1 @@
+subscription newEvents{events(first:$first after:$cursor order_by:$order){... eventFields}}fragment eventFields on events{ts id kind live device{udid label __typename} __typename}

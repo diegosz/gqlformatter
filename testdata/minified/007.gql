@@ -1,0 +1,1 @@
+query{products(where:{and:{not:{id:{is_null:true}} price:{gt:10}}}){id name price}}

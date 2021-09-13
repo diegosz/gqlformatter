@@ -1,0 +1,16 @@
+query {
+  products(
+    where: {
+      not: {
+        and: {
+          not: { id: { is_null: true } }
+          price: { gt: 10 }
+        }
+      }
+    }
+  ) {
+    id
+    name
+    price
+  }
+}

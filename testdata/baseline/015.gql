@@ -1,0 +1,75 @@
+query getAlerts {
+  alerts(
+    first: $first
+    after: $cursor
+    where: {
+      and: { deleted_at: { is_null: true }, is_acked: { eq: $is_acked } }
+    }
+    order_by: $order
+  ) {
+    id
+    ts
+    subject_type
+    subject_id
+    subject {
+      ... on visits {
+        id
+        visitor_id
+        start_time
+        end_time
+        started_at
+        ended_at
+        __typename
+      }
+      ... on devices {
+        id
+        udid
+        label
+        kind
+        serial
+        model
+        is_inoperative
+        is_lost
+        __typename
+      }
+    }
+    kind
+    severity
+    lat
+    lng
+    is_acked
+    created_at
+    updated_at
+    alert_acks(where: { deleted_at: { is_null: true } }) {
+      id
+      ack_time
+      acknowledger_type
+      acknowledger_id
+      acknowledger {
+        ... on operators {
+          id
+          credentials {
+            user_name
+            user_label
+            __typename
+          }
+          last_name
+          fore_name
+          __typename
+        }
+      }
+      comment: alert_comments(where: { deleted_at: { is_null: true } }) {
+        id
+        ts
+        note
+        created_at
+        updated_at
+        __typename
+      }
+      created_at
+      updated_at
+      __typename
+    }
+    __typename
+  }
+}

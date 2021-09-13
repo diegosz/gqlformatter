@@ -1,0 +1,47 @@
+query getAssignmentDevices {
+  devices(
+    first: $first
+    after: $cursor
+    where: {
+      and: {
+        deleted_at: { is_null: true }
+        is_assigned: { eq: false }
+        is_inoperative: { eq: false }
+        is_lost: { eq: false }
+        or: {
+          udid: { ilike: $filter1 }
+          label: { ilike: $filter1 }
+          serial: { ilike: $filter1 }
+          model: { ilike: $filter1 }
+        }
+        or: {
+          udid: { ilike: $filter2 }
+          label: { ilike: $filter2 }
+          serial: { ilike: $filter2 }
+          model: { ilike: $filter2 }
+        }
+        or: {
+          udid: { ilike: $filter3 }
+          label: { ilike: $filter3 }
+          serial: { ilike: $filter3 }
+          model: { ilike: $filter3 }
+        }
+      }
+    }
+    order_by: $order
+  ) {
+    id
+    udid
+    updated_at
+    device_batteries(
+      limit: 1
+      order_by: { ts: desc }
+    ) {
+      ts
+      id
+      charge
+      remaining
+      __typename
+    }
+  }
+}

@@ -1,0 +1,28 @@
+mutation insertContent @script {
+  contents(insert: $data) @object {
+    id
+    folder_id
+    blob_id
+    kind
+    name
+    description
+    duration
+    attributes
+    tags
+    updated_at
+    assets @object {
+      id
+      content_id
+      is_original
+      is_thumbnail
+      codec
+      size
+      lang
+      variant
+      uri
+      updated_at
+      __typename
+    }
+    __typename
+  }
+}
