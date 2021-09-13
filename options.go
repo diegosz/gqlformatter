@@ -40,9 +40,9 @@ func WithMinification() Option {
 	})
 }
 
-// WithTab returns an Option which sets the tab string to use.
-func WithTab(tab string) Option {
+// WithIndent returns an Option which sets the tab string to use.
+func WithIndent(indent string) Option {
 	return newFuncOption(func(f *formatter) {
-		f.indentUnit = tab
+		f.indentUnit = indent
 	})
 }

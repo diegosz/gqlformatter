@@ -138,18 +138,18 @@ func mustReadFile(name string) string {
 	return string(src)
 }
 
-func TestFormatQueryWithTab(t *testing.T) {
+func TestFormatQueryWithIndent(t *testing.T) {
 	query := "query{products(where:{and:{id:{greater_or_equals:20} id:{lt:28}}}){id name price}}"
 	tests := []struct {
-		name  string
-		input string
-		tab   string
-		want  string
+		name   string
+		input  string
+		indent string
+		want   string
 	}{
 		{
-			name:  "no spaces",
-			input: query,
-			tab:   "",
+			name:   "no spaces",
+			input:  query,
+			indent: "",
 			want: `query {
 products(
 where: {
@@ -167,9 +167,9 @@ price
 `,
 		},
 		{
-			name:  "1 space",
-			input: query,
-			tab:   " ",
+			name:   "1 space",
+			input:  query,
+			indent: " ",
 			want: `query {
  products(
   where: {
@@ -187,9 +187,9 @@ price
 `,
 		},
 		{
-			name:  "4 spaces",
-			input: query,
-			tab:   "    ",
+			name:   "4 spaces",
+			input:  query,
+			indent: "    ",
 			want: `query {
     products(
         where: {
@@ -207,9 +207,9 @@ price
 `,
 		},
 		{
-			name:  "1 tab",
-			input: query,
-			tab:   "\t",
+			name:   "1 tab",
+			input:  query,
+			indent: "\t",
 			want: `query {
 	products(
 		where: {
@@ -237,7 +237,7 @@ price
 				t.Fatal(err)
 			}
 			var buf bytes.Buffer
-			f := gqlformatter.NewFormatter(&buf, gqlformatter.WithTab(tt.tab))
+			f := gqlformatter.NewFormatter(&buf, gqlformatter.WithIndent(tt.indent))
 			f.FormatQueryDocument(doc)
 			_, err = parser.ParseQuery(&ast.Source{
 				Name:  tt.name,
@@ -251,7 +251,7 @@ price
 			}
 			got := buf.String()
 			if got != tt.want {
-				t.Errorf("FormatQuery %q with tab %q = %v, want %v", tt.name, tt.tab, got, tt.want)
+				t.Errorf("FormatQuery %q with tab %q = %v, want %v", tt.name, tt.indent, got, tt.want)
 			}
 		})
 	}
