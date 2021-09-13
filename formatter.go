@@ -13,15 +13,23 @@ import (
 	"github.com/vektah/gqlparser/v2/parser"
 )
 
+const (
+	DefaultIndent = "  "
+)
+
 func FormatQuery(input string) (string, error) {
-	return formatQuery(input, false)
+	return formatQuery(input, DefaultIndent, false)
+}
+
+func FormatQueryWithIndent(input, indent string) (string, error) {
+	return formatQuery(input, indent, false)
 }
 
 func FormatQueryMinified(input string) (string, error) {
-	return formatQuery(input, true)
+	return formatQuery(input, DefaultIndent, true)
 }
 
-func formatQuery(input string, minified bool) (string, error) {
+func formatQuery(input, indent string, minified bool) (string, error) {
 	if input == "" {
 		return "", nil
 	}
@@ -36,9 +44,9 @@ func formatQuery(input string, minified bool) (string, error) {
 	var buf bytes.Buffer
 	var f Formatter
 	if minified {
-		f = NewFormatter(&buf, WithMinification())
+		f = NewFormatter(&buf, WithMinification(), WithIndent(indent))
 	} else {
-		f = NewFormatter(&buf)
+		f = NewFormatter(&buf, WithIndent(indent))
 	}
 	f.FormatQueryDocument(doc)
 	_, err = parser.ParseQuery(&ast.Source{
@@ -63,7 +71,7 @@ func NewFormatter(
 	opts ...Option) Formatter {
 	f := &formatter{ // set defaults
 		writer:              w,
-		indentUnit:          "  ",
+		indentUnit:          DefaultIndent,
 		colonUnit:           ": ",
 		optArgumentSplitted: true,
 		optWhereLogicalOps:  true,
