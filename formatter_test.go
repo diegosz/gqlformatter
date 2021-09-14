@@ -21,12 +21,12 @@ var update = flag.Bool("u", false, "update golden files")
 
 func TestFormatQuery(t *testing.T) {
 	const testSourceDir = "./testdata/baseline"
-	const testBaselineDir = "./testdata/formatted"
+	const testExpectedDir = "./testdata/formatted"
 
 	executeGoldenTesting(t, &goldenConfig{
 		SourceDir: testSourceDir,
-		BaselineFileName: func(cfg *goldenConfig, f os.FileInfo) string {
-			return path.Join(testBaselineDir, f.Name())
+		ExpectedFileName: func(cfg *goldenConfig, f os.FileInfo) string {
+			return path.Join(testExpectedDir, f.Name())
 		},
 		Run: func(t *testing.T, cfg *goldenConfig, f os.FileInfo) string {
 			input := mustReadFile(path.Join(testSourceDir, f.Name()))
@@ -43,12 +43,12 @@ func TestFormatQuery(t *testing.T) {
 
 func TestFormatQueryMinified(t *testing.T) {
 	const testSourceDir = "./testdata/baseline"
-	const testBaselineDir = "./testdata/minified"
+	const testExpectedDir = "./testdata/minified"
 
 	executeGoldenTesting(t, &goldenConfig{
 		SourceDir: testSourceDir,
-		BaselineFileName: func(cfg *goldenConfig, f os.FileInfo) string {
-			return path.Join(testBaselineDir, f.Name())
+		ExpectedFileName: func(cfg *goldenConfig, f os.FileInfo) string {
+			return path.Join(testExpectedDir, f.Name())
 		},
 		Run: func(t *testing.T, cfg *goldenConfig, f os.FileInfo) string {
 			input := mustReadFile(path.Join(testSourceDir, f.Name()))
@@ -66,7 +66,7 @@ func TestFormatQueryMinified(t *testing.T) {
 type goldenConfig struct {
 	SourceDir        string
 	IsTarget         func(f os.FileInfo) bool
-	BaselineFileName func(cfg *goldenConfig, f os.FileInfo) string
+	ExpectedFileName func(cfg *goldenConfig, f os.FileInfo) string
 	Run              func(t *testing.T, cfg *goldenConfig, f os.FileInfo) string
 }
 
@@ -78,8 +78,8 @@ func executeGoldenTesting(t *testing.T, cfg *goldenConfig) {
 			return !f.IsDir()
 		}
 	}
-	if cfg.BaselineFileName == nil {
-		t.Fatal("BaselineFileName function is required")
+	if cfg.ExpectedFileName == nil {
+		t.Fatal("ExpectedFileName function is required")
 	}
 	if cfg.Run == nil {
 		t.Fatal("Run function is required")
@@ -99,7 +99,7 @@ func executeGoldenTesting(t *testing.T, cfg *goldenConfig) {
 		t.Run(f.Name(), func(t *testing.T) {
 			result := cfg.Run(t, cfg, f)
 
-			expectedFilePath := cfg.BaselineFileName(cfg, f)
+			expectedFilePath := cfg.ExpectedFileName(cfg, f)
 
 			if *update {
 				err := os.Remove(expectedFilePath)
